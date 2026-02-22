@@ -4,9 +4,15 @@ import uvicorn
 
 app = FastAPI()
 
+# --- Rota inicial para teste ---
+@app.get("/")
+def read_root():
+    return {"message": "API Omie rodando com sucesso!"}
+
 # --- COLOQUE SUAS CHAVES DO OMIE AQUI ---
 OMIE_APP_KEY = '7173616159710'
 OMIE_APP_SECRET = '3359dda1c6b2883ef06c5444836958b0 '
+
 @app.post("/webhook-entrega")
 async def receber_assinatura(request: Request):
     # Recebe os dados brutos
@@ -14,12 +20,10 @@ async def receber_assinatura(request: Request):
     print("\n--- 🟢 Nova Assinatura Recebida! ---")
     
     # O AppSheet envia os campos dentro da chave 'Data'
-    # Vamos pegar essa 'caixa' interna
     info = dados_brutos.get("Data", {})
     
-    # Agora extraímos os dados de dentro de 'info'
+    # Extraímos os dados
     funcionario = info.get("Funcionario")
-    # Note que o nome exato na sua planilha é Codigo_Produto_Omie
     cod_produto = info.get("Codigo_Produto_Omie") 
     qtd = info.get("Quantidade", 0)
 
@@ -49,4 +53,4 @@ async def receber_assinatura(request: Request):
         return {"status": "erro", "erro": str(e)}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=10000)
